@@ -170,6 +170,43 @@ class MinimaxPlayer(IsolationPlayer):
         # Return the best move from the last completed search iteration
         return best_move
 
+    def terminal_test(self, game):
+        """ Return True if the game is over for the active player
+        and False otherwise.
+        """
+        if len(game.get_legal_moves()) is 0:
+            return True
+        else:
+            return False
+
+    def min_value(self, game, depth, curDepth):
+        """ Return the value for a win (+1) if the game is over,
+        otherwise return the minimum value over all legal child
+        nodes.
+        """
+        if self.terminal_test(game) or depth <= curDepth:
+            return 1
+
+        v = float("inf")
+        for move in game.get_legal_moves():
+            nextGame = game.forecast_move(move)
+            v = min(v, self.max_value(nextGame, depth, curDepth+1))
+        return v
+
+    def max_value(self, game, depth, curDepth):
+        """ Return the value for a loss (-1) if the game is over,
+        otherwise return the maximum value over all legal child
+        nodes.
+        """
+        if self.terminal_test(game) or depth <= curDepth:
+            return -1
+
+        v = float("-inf")
+        for move in game.get_legal_moves():
+            nextGame = game.forecast_move(move)
+            v = max(v, self.min_value(nextGame, depth, curDepth+1))
+        return v
+
     def minimax(self, game, depth):
         """Implement depth-limited minimax search algorithm as described in
         the lectures.
@@ -209,11 +246,23 @@ class MinimaxPlayer(IsolationPlayer):
                 each helper function or else your agent will timeout during
                 testing.
         """
-        if self.time_left() < self.TIMER_THRESHOLD:
-            raise SearchTimeout()
+        # if self.time_left() < self.TIMER_THRESHOLD:
+        #     raise SearchTimeout()
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        v = float("-inf")
+        moves = (-1, -1)
+
+        for move in game.get_legal_moves():
+            nextGame = game.forecast_move(move)
+            nextGameScore = self.min_value(nextGame, depth, 1)
+
+            if v < nextGameScore:
+                v = nextGameScore
+                moves = move
+
+        print(game.to_string())
+        print(self.score(game, self))
+        return moves
 
 
 class AlphaBetaPlayer(IsolationPlayer):
