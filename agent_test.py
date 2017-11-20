@@ -9,6 +9,7 @@ import isolation
 import game_agent
 from game_agent import MinimaxPlayer
 from game_agent import SearchTimeout
+from game_agent import AlphaBetaPlayer
 
 # from importlib import reload
 
@@ -30,10 +31,10 @@ if __name__ == '__main__':
     # player1 = "Player1"
     # player2 = "Player2"
 
-    player1 = MinimaxPlayer()
-    player2 = MinimaxPlayer()
-    game = isolation.Board(player1, player2, width=3, height=3)
-    game.play()
+    player1 = AlphaBetaPlayer()
+    player2 = AlphaBetaPlayer()
+    game = isolation.Board(player1, player2, width=5, height=5)
+    print(game.play())
 
     # moves = player1.minimax(game, 3)
     # game.apply_move(moves)
