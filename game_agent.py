@@ -9,7 +9,13 @@ class SearchTimeout(Exception):
     """Subclass base exception for code clarity. """
     pass
 
-
+"""
+    Custom Evaluation function
+    - 1. calculate base score (my_moves - opponent_moves)
+    - 2. look if my currently position can block the any of the opponent's future moves
+    - 3. look if I have anywhere to move after blocking the opponent's future moves
+    - 4. if the second and the third conditions are met, give extra point
+"""
 def custom_score(game, player):
     if game.is_loser(player):
         return float("-inf")
@@ -30,7 +36,11 @@ def custom_score(game, player):
 
     return base_score
 
-
+"""
+    Custom Evaluation function2
+    - this function only relies on
+    1. look if my currently position can block the any of the opponent's future moves
+"""
 def custom_score_2(game, player):
     if game.is_loser(player):
         return float("-inf")
@@ -47,7 +57,12 @@ def custom_score_2(game, player):
     else:
         return float(0)
 
-
+"""
+    Custom Evaluation function3
+    - 1. calculate base score (my_moves - opponent_moves)
+    - 2. look if my currently position can block the any of the opponent's future moves
+    - 3. if the second condition is met, give extra point
+"""
 def custom_score_3(game, player):
     if game.is_loser(player):
         return float("-inf")
@@ -97,12 +112,18 @@ class MinimaxPlayer(IsolationPlayer):
         # Return the best move from the last completed search iteration
         return best_move
 
+    """
+        Helper function to check if the algorithm reached to the leaf nodes
+    """
     def terminal_test(self, game):
         if len(game.get_legal_moves()) is 0:
             return True
         else:
             return False
 
+    """
+        Helper function to perform max()
+    """
     def min_value(self, game, depth, curDepth):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
@@ -116,6 +137,9 @@ class MinimaxPlayer(IsolationPlayer):
             v = min(v, self.max_value(nextGame, depth, curDepth+1))
         return v
 
+    """
+        Helper function to perform max()
+    """
     def max_value(self, game, depth, curDepth):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
@@ -129,6 +153,9 @@ class MinimaxPlayer(IsolationPlayer):
             v = max(v, self.min_value(nextGame, depth, curDepth+1))
         return v
 
+    """
+        Running MiniMax algorithm
+    """
     def minimax(self, game, depth):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
@@ -166,6 +193,9 @@ class AlphaBetaPlayer(IsolationPlayer):
         # Return the best move from the last completed search iteration
         return best_move
 
+    """
+        Helper function to check if cutoff situation has to be activated
+    """
     def cutoff_test(self, game, depth):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
@@ -174,6 +204,9 @@ class AlphaBetaPlayer(IsolationPlayer):
         if depth == 0:
             return True
 
+    """
+        Helper function to perform min()
+    """
     def min_value(self, game, alpha, beta, depth):
         if self.cutoff_test(game, depth):
             return self.score(game, self)
@@ -188,7 +221,10 @@ class AlphaBetaPlayer(IsolationPlayer):
 
             beta = min(beta, v)
         return v
-
+        
+    """
+        Helper function to perform max()
+    """
     def max_value(self, game, alpha, beta, depth):
         if self.cutoff_test(game, depth):
             return self.score(game, self)
@@ -204,6 +240,9 @@ class AlphaBetaPlayer(IsolationPlayer):
             alpha = max(alpha, v)
         return v
 
+    """
+        Running AlphaBeta algorithm
+    """
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf")):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
