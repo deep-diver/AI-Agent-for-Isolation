@@ -221,7 +221,7 @@ class AlphaBetaPlayer(IsolationPlayer):
 
             beta = min(beta, v)
         return v
-        
+
     """
         Helper function to perform max()
     """
